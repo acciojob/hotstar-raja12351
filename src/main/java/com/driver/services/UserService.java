@@ -39,9 +39,9 @@ public class UserService {
         Subscription subscription = user.getSubscription();
         SubscriptionType subscriptionType = subscription.getSubscriptionType();
 
-        int count = 0;
+        Integer count = 0;
         for(WebSeries webSeries : webSeriesList){
-            if(webSeries.getSubscriptionType().equals(subscriptionType)){
+            if(webSeries.getSubscriptionType().equals(subscriptionType) && user.getAge() >= webSeries.getAgeLimit()){
                 count++;
             }
         }
