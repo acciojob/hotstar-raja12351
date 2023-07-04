@@ -40,7 +40,7 @@ public class SubscriptionService {
         }else if(subscriptionType.equals(SubscriptionType.PRO)){
             priceOdSubscription = 800 + (250 * noOfScreen);
         }else{
-            priceOdSubscription = 1000 + + (350 * noOfScreen);
+            priceOdSubscription = 1000 + (350 * noOfScreen);
         }
         subscription.setTotalAmountPaid(priceOdSubscription);
         Date date = new Date();
@@ -71,7 +71,14 @@ public class SubscriptionService {
             newAmount = 800 + (250 * noOfScreens);
             subscription.setTotalAmountPaid(newAmount);
         }
-        int diff = newAmount - amountPaid;
+        else if(subscriptionType.equals(SubscriptionType.PRO)){
+            subscription.setSubscriptionType(SubscriptionType.ELITE);
+            newAmount = 1000 + (350 * noOfScreens);
+            subscription.setTotalAmountPaid(newAmount);
+        }
+
+        int diff = Math.abs(newAmount - amountPaid);
+
         subscription = subscriptionRepository.save(subscription);
 
         user.setSubscription(subscription);
