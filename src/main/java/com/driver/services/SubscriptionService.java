@@ -43,6 +43,7 @@ public class SubscriptionService {
             priceOdSubscription = 1000 + (350 * noOfScreen);
         }
         subscription.setTotalAmountPaid(priceOdSubscription);
+        subscription.setUser(user);
         Date date = new Date();
         subscription.setStartSubscriptionDate(date);
 
@@ -57,26 +58,24 @@ public class SubscriptionService {
         //In all other cases just try to upgrade the subscription and tell the difference of price that user has to pay
         //update the subscription in the repository
         User user = userRepository.findById(userId).get();
-        if(user.getSubscription().getSubscriptionType().equals(SubscriptionType.ELITE)){
+        if(user.getSubscription().getSubscriptionType().toString().equals("ELITE")){
             throw new Exception("Already the best Subscription");
         }
         Subscription subscription = user.getSubscription();
-        int amountPaid = subscription.getTotalAmountPaid();
-        int noOfScreens = subscription.getNoOfScreensSubscribed();
+        Integer amountPaid = subscription.getTotalAmountPaid();
+        Integer noOfScreens = subscription.getNoOfScreensSubscribed();
         SubscriptionType subscriptionType = subscription.getSubscriptionType();
 
-        int newAmount = 0;
+        Integer newAmount = 0;
         if(subscriptionType.equals(SubscriptionType.BASIC)){
             subscription.setSubscriptionType(SubscriptionType.PRO);
-            newAmount = 800 + (250 * noOfScreens);
-            subscription.setTotalAmountPaid(newAmount);
+            newAmount = amountPaid + 300 + (50 * noOfScreens);
         }
         else if(subscriptionType.equals(SubscriptionType.PRO)){
             subscription.setSubscriptionType(SubscriptionType.ELITE);
-            newAmount = 1000 + (350 * noOfScreens);
-            subscription.setTotalAmountPaid(newAmount);
+            newAmount = amountPaid + 200 + (100 * noOfScreens);
         }
-
+        subscription.setTotalAmountPaid(newAmount);
         int diff = Math.abs(newAmount - amountPaid);
 
         subscription = subscriptionRepository.save(subscription);
@@ -93,7 +92,7 @@ public class SubscriptionService {
         //Hint is to use findAll function from the SubscriptionDb
         List<Subscription> subscriptionList = subscriptionRepository.findAll();
 
-        int totalRevenue = 0;
+        Integer totalRevenue = 0;
         for(Subscription subscription : subscriptionList){
             totalRevenue += subscription.getTotalAmountPaid();
         }
